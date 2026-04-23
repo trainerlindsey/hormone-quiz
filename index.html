@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What's Your Hormone Type? | Moxie by Lindsey</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ── Moxie palette ── */
+    --teal:         #06D1C6;
+    --teal-dark:    #04ADA4;
+    --teal-pale:    rgba(6,209,198,0.12);
+    --teal-glow:    rgba(6,209,198,0.22);
+
+    --pink:         #F4A7B9;
+    --pink-dark:    #E8839A;
+    --pink-pale:    rgba(244,167,185,0.15);
+
+    --lavender:     #C9B8E8;
+    --lavender-dark:#A99AD0;
+    --lavender-pale:rgba(201,184,232,0.15);
+
+    --cream:        #FDF8F2;
+    --cream-mid:    #F5EDE0;
+    --cream-dark:   #E8D9C8;
+
+    --ink:          #23222A;
+    --ink-mid:      #4A4855;
+    --ink-light:    #8C8A96;
+
+    --white:        #FFFFFF;
+    --border:       rgba(35,34,42,0.10);
+    --border-card:  rgba(35,34,42,0.07);
+
+    --shadow-sm:    0 2px 14px rgba(35,34,42,0.08);
+    --shadow-md:    0 8px 36px rgba(35,34,42,0.11);
+    --shadow-lg:    0 24px 64px rgba(35,34,42,0.14);
+
+    --radius:       20px;
+    --radius-sm:    12px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* Soft background blobs */
+  body::before {
+    content:'';
+    position:fixed;
+    inset:0;
+    background:
+      radial-gradient(ellipse 55% 45% at 90% 8%,  rgba(6,209,198,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 45% 40% at 5%  92%, rgba(244,167,185,0.13) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 50% at 50% 50%, rgba(201,184,232,0.07) 0%, transparent 70%);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .page-wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 36px 20px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Logo bar ── */
+  .logo-bar {
+    text-align: center;
+    margin-bottom: 30px;
+    animation: fadeDown 0.65s ease both;
+  }
+  .logo-bar svg {
+    height: 48px;
+    width: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ── Card ── */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-card);
+    overflow: hidden;
+  }
+
+  /* Progress bar */
+  .progress-track {
+    height: 5px;
+    background: var(--cream-dark);
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--lavender));
+    transition: width 0.55s cubic-bezier(0.4,0,0.2,1);
+    border-radius: 0 4px 4px 0;
+  }
+
+  .card-body {
+    padding: 44px 44px 50px;
+  }
+  @media(max-width:520px){ .card-body{ padding:30px 22px 40px; } }
+
+  /* ── Screens ── */
+  .screen { display:none; animation: slideIn 0.42s cubic-bezier(0.4,0,0.2,1) both; }
+  .screen.active { display:block; }
+
+  @keyframes slideIn  { from{opacity:0;transform:translateX(22px)} to{opacity:1;transform:translateX(0)} }
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-14px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn   { from{opacity:0} to{opacity:1} }
+  @keyframes popIn    { from{opacity:0;transform:scale(0.93) translateY(8px)} to{opacity:1;transform:scale(1) translateY(0)} }
+  @keyframes spin     { to{transform:rotate(360deg)} }
+  @keyframes slideBar { 0%{left:-40%;width:30%} 100%{left:110%;width:30%} }
+
+  /* ── Intro ── */
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: var(--teal-pale);
+    border: 1px solid var(--teal-glow);
+    border-radius: 100px;
+    padding: 6px 15px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    margin-bottom: 18px;
+  }
+
+  .intro-h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 6vw, 48px);
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--ink);
+    margin-bottom: 16px;
+    letter-spacing: -0.5px;
+  }
+  .intro-h1 em {
+    font-style: italic;
+    color: var(--teal-dark);
+  }
+
+  .intro-sub {
+    font-size: 15px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    margin-bottom: 26px;
+    font-weight: 400;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+  }
+  .tag {
+    background: var(--cream-mid);
+    border: 1px solid var(--cream-dark);
+    border-radius: 100px;
+    padding: 5px 13px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mid);
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cream-dark), transparent);
+    margin: 26px 0;
+  }
+
+  .trainer-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 30px;
+  }
+  .avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2.5px solid var(--teal);
+    flex-shrink: 0;
+    background: var(--cream-mid);
+  }
+  .avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+  .t-name { font-weight:700; font-size:14px; color:var(--ink); }
+  .t-tag  { font-size:12px; color:var(--ink-light); margin-top:2px; }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    padding: 17px 28px;
+    background: var(--teal);
+    color: var(--white);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14.5px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.22s ease;
+    box-shadow: 0 4px 20px rgba(6,209,198,0.30);
+    text-decoration: none;
+  }
+  .btn-primary:hover {
+    background: var(--teal-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(6,209,198,0.40);
+  }
+  .btn-primary:active { transform:translateY(0); }
+  .btn-primary.sm { width:auto; padding:12px 22px; font-size:13.5px; }
+
+  .btn-ghost {
+    background: none;
+    border: none;
+    color: var(--ink-light);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 0;
+    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn-ghost:hover { color: var(--ink); }
+
+  /* ── Progress meta ── */
+  .q-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .q-step {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+  }
+  .dots { display:flex; gap:5px; }
+  .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot.active { background:var(--teal); transform:scale(1.3); }
+  .dot.done   { background:var(--lavender); }
+
+  /* ── Questions ── */
+  .q-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    margin-bottom: 10px;
+  }
+  .q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 4.2vw, 28px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.25;
+    letter-spacing: -0.2px;
+    margin-bottom: 6px;
+  }
+  .q-sub {
+    font-size: 13px;
+    color: var(--ink-light);
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    margin-bottom: 24px;
+  }
+
+  .options { display:flex; flex-direction:column; gap:10px; }
+
+  .opt {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 15px 17px;
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    width: 100%;
+  }
+  .opt:hover {
+    border-color: var(--teal);
+    background: var(--teal-pale);
+    transform: translateX(4px);
+    box-shadow: var(--shadow-sm);
+  }
+  .opt.selected {
+    border-color: var(--teal);
+    background: var(--teal-pale);
+    box-shadow: 0 0 0 3px rgba(6,209,198,0.10);
+  }
+  .opt-icon { font-size:18px; flex-shrink:0; width:32px; text-align:center; }
+  .opt-label {
+    font-size: 13.5px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.45;
+    flex: 1;
+  }
+  .opt-check {
+    margin-left: auto;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--white);
+    transition: all 0.2s;
+  }
+  .opt.selected .opt-check {
+    background: var(--teal);
+    border-color: var(--teal);
+    box-shadow: 0 2px 8px rgba(6,209,198,0.35);
+  }
+
+  .nav-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 26px;
+  }
+
+  /* ── Loading ── */
+  .loading-center {
+    text-align: center;
+    padding: 16px 0;
+  }
+  .spinner-wrap {
+    position: relative;
+    width: 72px; height: 72px;
+    margin: 0 auto 24px;
+  }
+  .spinner {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    border: 3px solid var(--cream-dark);
+    border-top-color: var(--teal);
+    animation: spin 1.1s linear infinite;
+  }
+  .spinner-inner {
+    position: absolute;
+    inset: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--cream-dark);
+    border-top-color: var(--lavender);
+    animation: spin 0.8s linear infinite reverse;
+  }
+  .loading-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    letter-spacing: -0.3px;
+  }
+  .loading-sub { font-size:13px; color:var(--ink-light); }
+  .load-bar-wrap {
+    width:180px; height:4px;
+    background:var(--cream-dark);
+    border-radius:100px;
+    margin:22px auto 0;
+    overflow:hidden;
+    position:relative;
+  }
+  .load-bar {
+    position: absolute;
+    height: 100%;
+    width: 35%;
+    background: linear-gradient(90deg, var(--teal), var(--lavender));
+    border-radius: 100px;
+    animation: slideBar 1.6s ease-in-out infinite;
+  }
+
+  /* ── Results ── */
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--teal-pale);
+    border: 1px solid var(--teal-glow);
+    border-radius: 100px;
+    padding: 7px 16px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    margin-bottom: 16px;
+    animation: popIn 0.45s ease both 0.05s;
+  }
+  .result-h {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+    animation: popIn 0.45s ease both 0.10s;
+  }
+  .result-h em { font-style:italic; color:var(--teal-dark); }
+
+  .result-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: var(--ink-light);
+    margin-bottom: 20px;
+    animation: popIn 0.45s ease both 0.15s;
+  }
+  .result-rule {
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal), var(--lavender), transparent);
+    border-radius: 100px;
+    margin: 20px 0;
+    animation: popIn 0.45s ease both 0.18s;
+  }
+  .result-body {
+    font-size: 14.5px;
+    color: var(--ink-mid);
+    line-height: 1.78;
+    margin-bottom: 22px;
+    animation: popIn 0.45s ease both 0.22s;
+  }
+
+  /* Symptoms */
+  .chips-box {
+    background: var(--pink-pale);
+    border: 1px solid rgba(244,167,185,0.3);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+    animation: popIn 0.45s ease both 0.28s;
+  }
+  .chips-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--pink-dark);
+    margin-bottom: 12px;
+  }
+  .chips { display:flex; flex-wrap:wrap; gap:7px; }
+  .chip {
+    background: rgba(255,255,255,0.75);
+    border: 1px solid rgba(244,167,185,0.35);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-mid);
+  }
+
+  /* Action */
+  .action-box {
+    background: var(--lavender-pale);
+    border: 1px solid rgba(201,184,232,0.35);
+    border-left: 3px solid var(--lavender-dark);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    margin-bottom: 26px;
+    animation: popIn 0.45s ease both 0.34s;
+  }
+  .action-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--lavender-dark);
+    margin-bottom: 9px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .action-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1.6;
+  }
+
+  /* CTA */
+  .cta-wrap { animation: popIn 0.45s ease both 0.40s; }
+  .btn-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 19px 28px;
+    background: var(--teal);
+    color: var(--white);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.22s ease;
+    box-shadow: 0 6px 24px rgba(6,209,198,0.35);
+  }
+  .btn-cta:hover {
+    background: var(--teal-dark);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(6,209,198,0.45);
+  }
+
+  .reassure {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-light);
+    animation: popIn 0.45s ease both 0.46s;
+  }
+
+  .retake-btn {
+    display: block;
+    text-align: center;
+    margin-top: 22px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-light);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+    animation: popIn 0.45s ease both 0.50s;
+  }
+  .retake-btn:hover { color: var(--teal-dark); }
+
+  .footer {
+    text-align: center;
+    margin-top: 24px;
+    font-size: 11.5px;
+    font-weight: 500;
+    color: var(--ink-light);
+    animation: fadeIn 0.5s ease both 0.3s;
+  }
+  .footer a { color: var(--teal-dark); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  /* ── Podcast section ── */
+  .podcast-section {
+    margin-bottom: 24px;
+    animation: popIn 0.45s ease both 0.42s;
+  }
+  .podcast-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal-dark);
+    margin-bottom: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .podcast-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    background: var(--cream-mid);
+    border: 1px solid var(--cream-dark);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-bottom: 9px;
+  }
+  .podcast-card:last-child { margin-bottom: 0; }
+  .podcast-card:hover {
+    border-color: var(--teal);
+    background: var(--teal-pale);
+    transform: translateX(3px);
+    box-shadow: var(--shadow-sm);
+  }
+  .podcast-icon {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #1DB954, #158a3e);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .podcast-icon svg { display: block; }
+  .podcast-info { flex: 1; min-width: 0; }
+  .podcast-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.35;
+    margin-bottom: 2px;
+  }
+  .podcast-meta {
+    font-size: 11px;
+    color: var(--ink-light);
+    font-weight: 500;
+  }
+  .podcast-arrow {
+    color: var(--ink-light);
+    flex-shrink: 0;
+    transition: color 0.2s, transform 0.2s;
+  }
+  .podcast-card:hover .podcast-arrow {
+    color: var(--teal-dark);
+    transform: translateX(2px);
+  }
+
+  @media(max-width:480px){
+    .page-wrap { padding:20px 14px 56px; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- Logo -->
+  <div class="logo-bar">
+    <svg viewBox="0 0 346 86" xmlns="http://www.w3.org/2000/svg" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+      <g transform="matrix(1,0,0,1,-761.781,-251.74)">
+        <g>
+          <g transform="matrix(2.71308,0,0,2.71308,849.241,274.596)">
+            <circle cx="93" cy="21" r="2" style="fill:rgb(35,34,39);"/>
+          </g>
+          <g transform="matrix(10.5162,0,0,10.5162,-5355.7,-1063.58)">
+            <path d="M582.84,133.033L581.718,133.033L581.718,127.167L582.727,127.167L582.877,128.246L582.732,128.151C582.852,127.822 583.075,127.548 583.4,127.329C583.726,127.111 584.121,127.002 584.586,127.002C585.109,127.002 585.541,127.142 585.881,127.422C586.221,127.701 586.445,128.073 586.552,128.538L586.345,128.538C586.427,128.073 586.649,127.701 587.01,127.422C587.372,127.142 587.815,127.002 588.34,127.002C589.013,127.002 589.542,127.198 589.926,127.59C590.31,127.982 590.502,128.517 590.502,129.196L590.502,133.033L589.393,133.033L589.393,129.464C589.393,129.002 589.275,128.646 589.039,128.395C588.803,128.144 588.486,128.018 588.087,128.018C587.808,128.018 587.562,128.081 587.351,128.206C587.139,128.331 586.974,128.509 586.854,128.74C586.734,128.97 586.674,129.242 586.674,129.555L586.674,133.033L585.559,133.033L585.559,129.457C585.559,128.996 585.442,128.641 585.207,128.394C584.973,128.147 584.657,128.024 584.258,128.024C583.979,128.024 583.732,128.086 583.519,128.211C583.306,128.337 583.139,128.513 583.02,128.742C582.9,128.97 582.84,129.239 582.84,129.548L582.84,133.033Z" style="fill:rgb(35,34,39);fill-rule:nonzero;"/>
+          </g>
+          <g transform="matrix(10.5162,0,0,10.5162,-5359.96,-1063.58)">
+            <path d="M600.321,133.033L599.021,133.033L601.077,130.129L599.028,127.167L600.344,127.167L601.831,129.354L603.286,127.167L604.564,127.167L602.523,130.126L604.532,133.033L603.222,133.033L601.759,130.881L600.321,133.033Z" style="fill:rgb(35,34,39);fill-rule:nonzero;"/>
+          </g>
+          <g transform="matrix(10.5162,0,0,10.5162,-5368.01,-1063.58)">
+            <path d="M606.294,133.033L606.294,127.167L607.416,127.167L607.416,133.033L606.294,133.033ZM606.85,126.563C606.643,126.563 606.467,126.49 606.321,126.345C606.176,126.199 606.103,126.025 606.103,125.823C606.103,125.617 606.176,125.44 606.321,125.294C606.467,125.148 606.643,125.075 606.85,125.075C607.053,125.075 607.227,125.148 607.373,125.294C607.519,125.44 607.591,125.617 607.591,125.823C607.591,126.025 607.519,126.199 607.373,126.345C607.227,126.49 607.053,126.563 606.85,126.563Z" style="fill:rgb(35,34,39);fill-rule:nonzero;"/>
+          </g>
+          <g transform="matrix(10.5162,0,0,10.5162,-5376.25,-1063.58)">
+            <path d="M612.069,133.182C611.496,133.182 610.99,133.052 610.551,132.791C610.112,132.53 609.769,132.168 609.521,131.706C609.273,131.243 609.15,130.708 609.15,130.101C609.15,129.491 609.271,128.953 609.513,128.488C609.755,128.024 610.091,127.66 610.521,127.397C610.952,127.134 611.449,127.002 612.013,127.002C612.573,127.002 613.06,127.122 613.474,127.362C613.887,127.602 614.208,127.937 614.436,128.368C614.664,128.8 614.778,129.307 614.778,129.892L614.778,130.313L609.752,130.323L609.776,129.566L613.654,129.566C613.654,129.076 613.505,128.683 613.209,128.388C612.912,128.092 612.515,127.944 612.018,127.944C611.644,127.944 611.322,128.027 611.055,128.191C610.787,128.356 610.582,128.596 610.439,128.911C610.296,129.226 610.224,129.604 610.224,130.045C610.224,130.753 610.384,131.295 610.704,131.673C611.024,132.051 611.484,132.24 612.085,132.24C612.527,132.24 612.888,132.152 613.169,131.976C613.451,131.8 613.637,131.546 613.728,131.213L614.788,131.213C614.648,131.837 614.341,132.321 613.868,132.665C613.394,133.01 612.795,133.182 612.069,133.182Z" style="fill:rgb(35,34,39);fill-rule:nonzero;"/>
+          </g>
+          <g transform="matrix(2.71308,0,0,2.71308,-780.073,-10.7071)">
+            <path d="M628.513,108.23C630.51,110.346 631.724,113.131 631.724,116.181C631.724,122.792 626.022,128.158 618.999,128.158C616.035,128.158 613.307,127.203 611.142,125.601L614.078,122.665C615.465,123.6 617.164,124.15 618.999,124.15C623.672,124.15 627.466,120.58 627.466,116.181C627.466,114.281 626.758,112.536 625.577,111.166L628.513,108.23ZM609.485,124.132C607.488,122.016 606.274,119.231 606.274,116.181C606.274,109.571 611.976,104.204 618.999,104.204C621.963,104.204 624.691,105.16 626.855,106.762L623.92,109.697C622.533,108.762 620.834,108.212 618.999,108.212C614.326,108.212 610.532,111.783 610.532,116.181C610.532,118.081 611.24,119.826 612.421,121.196L609.485,124.132Z" style="fill:rgb(6,209,198);"/>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <div class="card">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="card-body">
+
+      <!-- ── INTRO ── -->
+      <div class="screen active" id="screen-intro">
+        <div class="eyebrow">✨ Free Quiz · Women 40+</div>
+        <h1 class="intro-h1">What's Your<br><em>Hormone Type?</em></h1>
+        <p class="intro-sub">Answer 5 quick questions about your symptoms, habits, and lifestyle — and discover exactly what's driving your weight gain, fatigue, and frustration so you can stop guessing and start getting real results.</p>
+        <div class="tag-row">
+          <span class="tag">⏱ 2 minutes</span>
+          <span class="tag">🔍 Personalized result</span>
+          <span class="tag">💡 No email required</span>
+          <span class="tag">🎯 Built for perimenopause</span>
+        </div>
+        <div class="divider"></div>
+        <div class="trainer-row">
+          <div class="avatar">
+            <img src="data:image/jpeg;base64,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" alt="Trainer Lindsey">
+          </div>
+          <div>
+            <div class="t-name">Trainer Lindsey</div>
+            <div class="t-tag">Women's Hormone &amp; Fat Loss Coach · 3,800+ clients helped</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="startQuiz()">
+          Take the Free Quiz
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+
+      <!-- ── Q1 ── -->
+      <div class="screen" id="screen-q1">
+        <div class="q-meta"><span class="q-step">Question 1 of 5</span><div class="dots" id="dots-q1"></div></div>
+        <div class="q-label">Question 01</div>
+        <h2 class="q-text">When you wake up in the morning, how do you feel?</h2>
+        <p class="q-sub">Pick what feels most true right now.</p>
+        <div class="options" id="opts-1">
+          <button class="opt" onclick="pick(1,'A',this)"><span class="opt-icon">😤</span><span class="opt-label">Wired but tired — anxious, restless, and still completely drained</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(1,'B',this)"><span class="opt-icon">🌊</span><span class="opt-label">Hit or miss — some mornings okay, others I'm emotional or off</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(1,'C',this)"><span class="opt-icon">🐌</span><span class="opt-label">Sluggish and heavy — my body takes forever to get going</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(1,'D',this)"><span class="opt-icon">😩</span><span class="opt-label">Exhausted no matter how much I slept — running on fumes from the start</span><span class="opt-check">✓</span></button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-ghost" onclick="go('intro',0)">← Back</button>
+          <button class="btn-primary sm" onclick="next(1,2)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Q2 ── -->
+      <div class="screen" id="screen-q2">
+        <div class="q-meta"><span class="q-step">Question 2 of 5</span><div class="dots" id="dots-q2"></div></div>
+        <div class="q-label">Question 02</div>
+        <h2 class="q-text">Where is the weight gain showing up most?</h2>
+        <p class="q-sub">Be honest — this is a safe space!</p>
+        <div class="options" id="opts-2">
+          <button class="opt" onclick="pick(2,'A',this)"><span class="opt-icon">🫃</span><span class="opt-label">Belly and midsection — stubborn, puffy, seemingly overnight</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(2,'B',this)"><span class="opt-icon">🔄</span><span class="opt-label">Hips, chest, and thighs — my whole body shape is shifting</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(2,'C',this)"><span class="opt-icon">📈</span><span class="opt-label">All over — the scale creeps up no matter what I do</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(2,'D',this)"><span class="opt-icon">💧</span><span class="opt-label">More puffy and bloated than "fat" — like inflammation from the inside</span><span class="opt-check">✓</span></button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-ghost" onclick="go('q1',1)">← Back</button>
+          <button class="btn-primary sm" onclick="next(2,3)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Q3 ── -->
+      <div class="screen" id="screen-q3">
+        <div class="q-meta"><span class="q-step">Question 3 of 5</span><div class="dots" id="dots-q3"></div></div>
+        <div class="q-label">Question 03</div>
+        <h2 class="q-text">How is your sleep right now?</h2>
+        <p class="q-sub">Choose the one that resonates most.</p>
+        <div class="options" id="opts-3">
+          <button class="opt" onclick="pick(3,'A',this)"><span class="opt-icon">🧠</span><span class="opt-label">Racing mind — can't shut off my thoughts, awake at 3am stressed</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(3,'B',this)"><span class="opt-icon">🌡️</span><span class="opt-label">Hot flashes or night sweats wake me up — I can't stay asleep</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(3,'C',this)"><span class="opt-icon">😴</span><span class="opt-label">I sleep okay but still wake up feeling heavy and unrefreshed</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(3,'D',this)"><span class="opt-icon">✅</span><span class="opt-label">Sleep is fine — it's the daytime brain fog and exhaustion that gets me</span><span class="opt-check">✓</span></button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-ghost" onclick="go('q2',2)">← Back</button>
+          <button class="btn-primary sm" onclick="next(3,4)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Q4 ── -->
+      <div class="screen" id="screen-q4">
+        <div class="q-meta"><span class="q-step">Question 4 of 5</span><div class="dots" id="dots-q4"></div></div>
+        <div class="q-label">Question 04</div>
+        <h2 class="q-text">Which best describes your current workout approach?</h2>
+        <p class="q-sub">No judgment — just pick what's real for you.</p>
+        <div class="options" id="opts-4">
+          <button class="opt" onclick="pick(4,'A',this)"><span class="opt-icon">💥</span><span class="opt-label">Pushing hard — HIIT, bootcamps, or intense cardio — and getting nowhere</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(4,'B',this)"><span class="opt-icon">🎢</span><span class="opt-label">Inconsistent — some weeks I crush it, other weeks I can't even start</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(4,'C',this)"><span class="opt-icon">🔄</span><span class="opt-label">Tried everything over the years — nothing creates real or lasting change</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(4,'D',this)"><span class="opt-icon">🪫</span><span class="opt-label">Barely exercising — my energy is too low and I don't know where to begin</span><span class="opt-check">✓</span></button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-ghost" onclick="go('q3',3)">← Back</button>
+          <button class="btn-primary sm" onclick="next(4,5)">Next →</button>
+        </div>
+      </div>
+
+      <!-- ── Q5 ── -->
+      <div class="screen" id="screen-q5">
+        <div class="q-meta"><span class="q-step">Question 5 of 5</span><div class="dots" id="dots-q5"></div></div>
+        <div class="q-label">Question 05 — Last One!</div>
+        <h2 class="q-text">How have you been feeling emotionally?</h2>
+        <p class="q-sub">You can be completely honest here.</p>
+        <div class="options" id="opts-5">
+          <button class="opt" onclick="pick(5,'A',this)"><span class="opt-icon">😤</span><span class="opt-label">Frustrated and on edge — stressed, wired, and my body won't cooperate</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(5,'B',this)"><span class="opt-icon">🌊</span><span class="opt-label">Up and down — mood swings, feeling unlike myself, sometimes emotional for no reason</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(5,'C',this)"><span class="opt-icon">😶</span><span class="opt-label">Flat and disconnected — low motivation, foggy, like my spark has faded</span><span class="opt-check">✓</span></button>
+          <button class="opt" onclick="pick(5,'D',this)"><span class="opt-icon">😞</span><span class="opt-label">Defeated — I've tried so much and I'm starting to believe nothing will work</span><span class="opt-check">✓</span></button>
+        </div>
+        <div class="nav-row">
+          <button class="btn-ghost" onclick="go('q4',4)">← Back</button>
+          <button class="btn-primary sm" onclick="finish()">See My Results ✨</button>
+        </div>
+      </div>
+
+      <!-- ── LOADING ── -->
+      <div class="screen" id="screen-loading">
+        <div class="loading-center">
+          <div class="spinner-wrap">
+            <div class="spinner"></div>
+            <div class="spinner-inner"></div>
+          </div>
+          <h2 class="loading-title">Analyzing your answers…</h2>
+          <p class="loading-sub">Identifying your unique hormone type</p>
+          <div class="load-bar-wrap"><div class="load-bar"></div></div>
+        </div>
+      </div>
+
+      <!-- ── RESULT (injected by JS) ── -->
+      <div class="screen" id="screen-result"></div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    Created by <a href="https://www.moxiebylindsey.com" target="_blank">Moxie by Lindsey</a> &nbsp;·&nbsp; For educational purposes &nbsp;·&nbsp; Not medical advice
+  </div>
+</div>
+
+<script>
+  const answers = {};
+
+  // Scoring: [Cortisol_Crusher, Estrogen_Rollercoaster, Metabolic_Slowdown]
+  const scoring = {
+    1: { A:[1,0,0], B:[0,1,0], C:[0,0,1], D:[1,0,1] },
+    2: { A:[1,0,0], B:[0,1,0], C:[0,0,1], D:[1,0,1] },
+    3: { A:[1,0,0], B:[0,1,0], C:[0,0,1], D:[0,0,1] },
+    4: { A:[1,0,0], B:[0,1,0], C:[0,0,1], D:[0,0,1] },
+    5: { A:[1,0,0], B:[0,1,0], C:[0,1,1], D:[0,0,1] }
+  };
+
+  const podcastHTML = `
+    <div class="podcast-section">
+      <div class="podcast-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+        Recommended Listening for You
+      </div>
+      <a class="podcast-card" href="https://open.spotify.com/episode/2iqF1R39OXcRQRaz42e0FA?si=6478615631054448" target="_blank">
+        <div class="podcast-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <div class="podcast-info">
+          <div class="podcast-title">How to know if your hormones are affecting your weight loss</div>
+          <div class="podcast-meta">Nourish &amp; Strengthen Podcast · Spotify</div>
+        </div>
+        <svg class="podcast-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a class="podcast-card" href="https://open.spotify.com/episode/38NrC8MOkhsnGwZivm6pyS?si=9d2788537b6f424d" target="_blank">
+        <div class="podcast-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <div class="podcast-info">
+          <div class="podcast-title">My own journey with a 50lb weight gain due to hormone imbalances</div>
+          <div class="podcast-meta">Nourish &amp; Strengthen Podcast · Spotify</div>
+        </div>
+        <svg class="podcast-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+  `;
+
+  const results = {
+    1: {
+      badge: '🔥 Type 1 — The Cortisol Crusher',
+      headline: 'The Cortisol <em>Crusher</em>',
+      tagline: '"You\'re doing everything right — and your body is fighting back."',
+      body: `First, I want you to hear this: you are not failing. I know it feels that way when you're dragging yourself to workouts, eating clean, doing ALL the things — and the scale still won't budge. But here's what's actually happening. In perimenopause, dropping estrogen makes your body way more sensitive to stress. So your cortisol — your main stress hormone — is likely running high all the time. And here's the part that feels so unfair: every intense workout, every strict diet, every "just push harder" moment is actually spiking that cortisol even more. Your body isn't being stubborn. It's protecting you. It just needs a completely different signal than the one you've been giving it.`,
+      symptoms: ['Stubborn belly fat', '3am wake-ups', 'Wired but tired', 'Belly bloating', 'Sugar cravings', 'Anxious or on edge'],
+      action: '🎯 This week, swap ONE high-intensity session for a 30-minute strength workout and take a 10-minute walk outside after dinner. Less stress on your system = more fat loss. It really is that different from what you\'ve been told.',
+      cta: 'Book Your Free Strategy Call'
+    },
+    2: {
+      badge: '🌊 Type 2 — The Estrogen Rollercoaster',
+      headline: 'The Estrogen <em>Rollercoaster</em>',
+      tagline: '"Your body changed overnight — and nobody warned you."',
+      body: `Can I just say — you are not losing your mind. I know it can feel that way when you're fine one minute, crying the next, waking up drenched in sweat at 2am, and looking in the mirror wondering who that person is. Here's what's going on: your estrogen doesn't just decline in perimenopause — it swings wildly, sometimes hour to hour. And estrogen does SO much more than people realize. It affects your mood, your metabolism, your sleep, your brain, and even where your body stores fat. When it's all over the place, you feel all over the place. This isn't weakness. This isn't "just stress." It's a hormonal shift your body has never been through before, and it deserves a real strategy — not just "push through it."`,
+      symptoms: ['Mood swings & emotional waves', 'Hot flashes / night sweats', 'Brain fog', 'Irregular periods', 'Weight shifting to new places', 'Feeling unlike yourself'],
+      action: '🎯 This week, focus on getting 25–30g of protein at every single meal. I know it sounds simple, but stabilizing your blood sugar is one of the fastest ways to calm the estrogen rollercoaster — fewer crashes, fewer cravings, and a steadier mood throughout the day.',
+      cta: 'Book Your Free Clarity Call'
+    },
+    3: {
+      badge: '⚡ Type 3 — The Metabolic Slowdown',
+      headline: 'The Metabolic <em>Slowdown</em>',
+      tagline: '"You used to eat this way and stay lean. Now nothing moves."',
+      body: `You have not failed. I need you to really sit with that — because I know the shame that builds when you try everything and watch nothing work. Here's the truth: years of dieting, restriction, and "eat less, move more" advice — layered on top of the hormonal changes of perimenopause — have put your metabolism into survival mode. Your body is clinging to every calorie because it genuinely doesn't feel safe letting go. And the harder you restrict, the tighter it holds on. This is not a character flaw. It's not laziness. It's your body doing exactly what it was designed to do when it senses threat. The good news? This is completely reversible. But it means doing something that probably feels counterintuitive — and that's exactly where I can help.`,
+      symptoms: ['Plateau despite eating well', 'Low energy all day', 'Cold hands & feet', 'Hair thinning', 'Slow digestion', 'History of yo-yo dieting'],
+      action: '🎯 This week, aim for 25–30g of protein at breakfast. I know "eat more" sounds backwards when you\'re trying to lose weight — but consistently fueling your body is the very first signal that tells your metabolism it\'s safe to start working for you again.',
+      cta: 'Book Your Free Metabolism Audit'
+    }
+  };
+
+  function setProgress(pct) {
+    document.getElementById('progressFill').style.width = pct + '%';
+  }
+
+  function renderDots(id, current) {
+    const el = document.getElementById('dots-' + id);
+    if (!el) return;
+    el.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i < current ? ' done' : i === current ? ' active' : '');
+      el.appendChild(d);
+    }
+  }
+
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('screen-' + id);
+    if (el) { el.classList.remove('active'); void el.offsetWidth; el.classList.add('active'); }
+  }
+
+  function startQuiz() {
+    showScreen('q1'); setProgress(0); renderDots('q1', 1);
+  }
+
+  function go(screenId, qNum) {
+    showScreen(screenId === 'intro' ? 'intro' : screenId);
+    if (qNum > 0) { setProgress((qNum - 1) / 5 * 100); renderDots('q' + qNum, qNum); }
+    else setProgress(0);
+  }
+
+  function pick(q, opt, btn) {
+    answers[q] = opt;
+    document.querySelectorAll('#opts-' + q + ' .opt').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+
+  function flash(q) {
+    const opts = document.getElementById('opts-' + q);
+    opts.style.opacity = '0.4';
+    setTimeout(() => opts.style.opacity = '1', 280);
+  }
+
+  function next(from, to) {
+    if (!answers[from]) { flash(from); return; }
+    showScreen('q' + to);
+    setProgress((to - 1) / 5 * 100);
+    renderDots('q' + to, to);
+  }
+
+  function calcType() {
+    const t = [0, 0, 0];
+    for (let q = 1; q <= 5; q++) {
+      const pts = scoring[q][answers[q] || 'D'] || [0, 0, 0];
+      pts.forEach((v, i) => t[i] += v);
+    }
+    return t.indexOf(Math.max(...t)) + 1;
+  }
+
+  function finish() {
+    if (!answers[5]) { flash(5); return; }
+    showScreen('loading');
+    setProgress(100);
+    setTimeout(() => {
+      const r = results[calcType()];
+      document.getElementById('screen-result').innerHTML = `
+        <div class="result-badge">${r.badge}</div>
+        <h2 class="result-h">${r.headline}</h2>
+        <p class="result-tagline">${r.tagline}</p>
+        <div class="result-rule"></div>
+        <p class="result-body">${r.body}</p>
+        <div class="chips-box">
+          <div class="chips-label">🧩 Your Signature Symptoms</div>
+          <div class="chips">${r.symptoms.map(s => `<span class="chip">${s}</span>`).join('')}</div>
+        </div>
+        <div class="action-box">
+          <div class="action-label">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            Your Action This Week
+          </div>
+          <p class="action-text">${r.action}</p>
+        </div>
+        ${podcastHTML}
+        <div class="cta-wrap">
+          <a href="https://www.moxiebylindsey.com/moxie-application" target="_blank" class="btn-cta">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${r.cta}
+          </a>
+        </div>
+        <p class="reassure">Free · No obligation · Just a conversation about your goals 💪</p>
+        <button class="retake-btn" onclick="retake()">↩ Retake the quiz</button>
+      `;
+      showScreen('result');
+    }, 2400);
+  }
+
+  function retake() {
+    Object.keys(answers).forEach(k => delete answers[k]);
+    document.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+    showScreen('intro');
+    setProgress(0);
+  }
+</script>
+</body>
+</html>
